@@ -14,7 +14,8 @@ done
 CONFIG="$(realpath "$CONFIG")"
 [[ "$CONFIG" == /share/* ]] || fail "配置文件必须位于 /share 内"
 [[ -c /dev/net/tun ]] || fail "未找到 /dev/net/tun"
-ARGS=(--config "$CONFIG" --cd "$(dirname "$CONFIG")")
+CONFIG_DIR="$(dirname "$CONFIG")"
+RUNTIME_CONFIG=""
 VPN_PID=""
 RULE_ADDED=false
 cleanup() {
@@ -27,9 +28,21 @@ cleanup() {
         ip -4 rule del priority "$PRIORITY" from "$LAN_IP/32" table "$TABLE" 2>/dev/null || true
         ip -4 route flush table "$TABLE" 2>/dev/null || true
     fi
+    if [[ -n "$RUNTIME_CONFIG" ]]; then
+        rm -f -- "$RUNTIME_CONFIG"
+    fi
 }
 trap cleanup EXIT
 trap 'exit 0' TERM INT
+if grep -Eq '^route-up .*ip route replace table 177 .*ip rule add priority 17700 ' "$CONFIG"; then
+    RUNTIME_CONFIG="$(mktemp /data/openvpn-effective.XXXXXX)"
+    chmod 600 "$RUNTIME_CONFIG"
+    awk '!(/^route-up / && index($0,"ip route replace table 177 ") && index($0,"ip rule add priority 17700 "))' "$CONFIG" > "$RUNTIME_CONFIG"
+    CONFIG="$RUNTIME_CONFIG"
+    echo "已忽略旧版临时修复的 route-up 命令，使用应用自身的回程保护；原始配置文件未修改。"
+fi
+# Change directory before parsing relative certificate and password paths.
+ARGS=(--cd "$CONFIG_DIR" --config "$CONFIG")
 if [[ "$(jq -r '.protect_lan' "$OPTIONS")" != false ]]; then
     IFACE="$(option lan_interface)"
     DEFAULTS="$(ip -j -4 route show table main default)"

@@ -1,6 +1,6 @@
 {
   "name": "OpenVPN Client（修复版）",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "slug": "openvpn_client",
   "description": "OpenVPN 客户端，保护局域网 IPv4 回程，保留原地址访问",
   "url": "https://github.com/HASSAAS/homeassistant-openvpn-client-addon",

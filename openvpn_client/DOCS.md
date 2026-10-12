@@ -54,7 +54,11 @@ routing_priority: 17800
 
 如果旧 `.ovpn` 文件含有手工添加的 `route-up` 回程修复命令，请先备份文件，删除该旧修复命令，交由本应用管理。旧规则与应用默认的 17800 表互不共用，但遗留优先级更高的规则仍可能影响访问。
 
+从 1.0.1 开始，应用会识别本次旧临时修复中同时包含 `ip route replace table 177` 与 `ip rule add priority 17700` 的 `route-up` 行，在权限为 600 的临时运行配置中忽略它，避免超长命令阻止启动。原始 `.ovpn` 不会被修改，其他用户自定义钩子保持原样。临时运行配置在应用正常退出时删除。
+
 ## 常见问题
+
+- **Maximum option line length (256) exceeded，指向旧 route-up**：更新到 1.0.1；或先备份 `/share/openvpn-client/client.ovpn`，仅删除旧临时回程修复的 `route-up` 行。回程保护由应用选项控制，不需要把长命令写入 `.ovpn`。
 
 - **一直等待文件**：检查日志中的完整路径；默认文件必须在 `/share/openvpn-client/client.ovpn`。
 - **认证失败**：检查服务端导出的客户端证书和账号文件；证书、私钥、密码应只保存在本地。
