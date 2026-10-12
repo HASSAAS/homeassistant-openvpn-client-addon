@@ -1,0 +1,32 @@
+{
+  "configuration": {
+    "ovpnfile": {
+      "name": "配置文件相对路径",
+      "description": "相对于 /share，例如 openvpn-client/client.ovpn。完整路径：/share/openvpn-client/client.ovpn。"
+    },
+    "protect_lan": {
+      "name": "保护局域网访问",
+      "description": "让本地 IPv4 地址的回复经本地网关返回。"
+    },
+    "lan_interface": {
+      "name": "局域网网卡",
+      "description": "留空自动识别；多网卡时建议指定。"
+    },
+    "lan_gateway": {
+      "name": "局域网网关",
+      "description": "留空自动识别本地默认网关。"
+    },
+    "lan_subnet": {
+      "name": "局域网网段",
+      "description": "留空自动识别，例如 192.168.1.0/24。"
+    },
+    "routing_table": {
+      "name": "路由表编号",
+      "description": "默认 17800，必须未被其他程序使用。"
+    },
+    "routing_priority": {
+      "name": "路由规则优先级",
+      "description": "默认 17800，必须未被其他程序使用。"
+    }
+  }
+}

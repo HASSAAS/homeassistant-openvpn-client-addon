@@ -1,0 +1,34 @@
+name: Build application
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - platform: linux/amd64
+            arch: amd64
+          - platform: linux/arm64
+            arch: aarch64
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check shell syntax and configuration
+        run: |
+          bash -n openvpn_client/run.sh
+          jq -e '.options.ovpnfile == "openvpn-client/client.ovpn" and .options.protect_lan == true' openvpn_client/config.json
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v6
+        with:
+          context: openvpn_client
+          platforms: ${{ matrix.platform }}
+          push: false
+          build-args: |
+            BUILD_VERSION=1.0.0
+            BUILD_ARCH=${{ matrix.arch }}

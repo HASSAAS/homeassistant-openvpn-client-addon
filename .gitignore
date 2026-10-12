@@ -1,0 +1,8 @@
+upstream/
+*.zip
+*.bak*
+*.ovpn
+auth.txt
+*.key
+*.crt
+__pycache__/

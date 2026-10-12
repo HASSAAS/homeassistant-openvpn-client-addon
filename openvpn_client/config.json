@@ -1,0 +1,41 @@
+{
+  "name": "OpenVPN Client（修复版）",
+  "version": "1.0.0",
+  "slug": "openvpn_client",
+  "description": "OpenVPN 客户端，保护局域网 IPv4 回程，保留原地址访问",
+  "url": "https://github.com/HASSAAS/homeassistant-openvpn-client-addon",
+  "arch": [
+    "aarch64",
+    "amd64"
+  ],
+  "startup": "application",
+  "boot": "auto",
+  "host_network": true,
+  "privileged": [
+    "NET_ADMIN"
+  ],
+  "options": {
+    "ovpnfile": "openvpn-client/client.ovpn",
+    "protect_lan": true,
+    "lan_interface": "",
+    "lan_gateway": "",
+    "lan_subnet": "",
+    "routing_table": 17800,
+    "routing_priority": 17800
+  },
+  "schema": {
+    "ovpnfile": "str",
+    "protect_lan": "bool",
+    "lan_interface": "str?",
+    "lan_gateway": "str?",
+    "lan_subnet": "str?",
+    "routing_table": "int(1000,32000)",
+    "routing_priority": "int(1000,32000)"
+  },
+  "map": [
+    "share:rw"
+  ],
+  "devices": [
+    "/dev/net/tun"
+  ]
+}
